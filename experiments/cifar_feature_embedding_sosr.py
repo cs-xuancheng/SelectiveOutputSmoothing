@@ -152,7 +152,8 @@ def train(trainloader, model, criterion, optimizer, epoch):
 
         # compute output
         feats, outputs = model(inputs)
-        loss = criterion(outputs, targets)
+        desired_outputs = output_smooth(outputs, targets, threshold=args.threshold)
+        loss = criterion(outputs, targets) + args.beta * pow((outputs - desired_outputs), 2).mean()
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
