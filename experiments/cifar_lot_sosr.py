@@ -183,8 +183,8 @@ def train(trainloader, teacher, student, teacher_optimizer, student_optimizer, e
         teacher_outputs = teacher(inputs)
         student_outputs = student(inputs)
 
-        desired_t_outputs = output_smooth(teacher_outputs, targets, threshold=0.99)
-        desired_s_outputs = output_smooth(student_outputs, targets, threshold=0.99)
+        desired_t_outputs = output_smooth(teacher_outputs, targets, threshold=args.threshold)
+        desired_s_outputs = output_smooth(student_outputs, targets, threshold=args.threshold)
         teacher_pred=F.log_softmax(teacher_outputs, dim=-1)
         student_pred=F.log_softmax(student_outputs, dim=-1)
 
