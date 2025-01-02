@@ -172,17 +172,11 @@ def train(trainloader, teacher, student, teacher_optimizer, student_optimizer, e
     teacher.train()
     student.train()
 
-    batch_time = AverageMeter()
-    data_time = AverageMeter()
     losses = AverageMeter()
     t_top1 = AverageMeter()
     s_top1 = AverageMeter()
-    end = time.time()
 
     for batch_idx, (inputs, targets) in enumerate(trainloader):
-        # measure data loading time
-        data_time.update(time.time() - end)
-
         inputs, targets = inputs.cuda(), targets.cuda()
 
         # compute output
@@ -226,10 +220,6 @@ def train(trainloader, teacher, student, teacher_optimizer, student_optimizer, e
             student_loss.backward()
             student_optimizer.step()
 
-        # measure elapsed time
-        batch_time.update(time.time() - end)
-        end = time.time()
-
         # progress
         if batch_idx % 10 == 0 or batch_idx == len(trainloader)-1:
             print('Training | Epoch:{}/{}| Batch: {}/{}| Teacher Top-1:{:.2f} | Student Top-1:{:.2f}'.format(
@@ -241,16 +231,10 @@ def test(testloader, teacher, student):
     teacher.eval()
     student.eval()
 
-    batch_time = AverageMeter()
-    data_time = AverageMeter()
     t_top1 = AverageMeter()
     s_top1 = AverageMeter()
 
-    end = time.time()
     for batch_idx, (inputs, targets) in enumerate(testloader):
-        # measure data loading time
-        data_time.update(time.time() - end)
-
         inputs, targets = inputs.cuda(), targets.cuda()
 
         # compute output
@@ -262,10 +246,6 @@ def test(testloader, teacher, student):
         s_prec1, _ = accuracy(student_outputs.data, targets.data, topk=(1,5))
         t_top1.update(t_prec1.item(), inputs.size(0))
         s_top1.update(s_prec1.item(), inputs.size(0))
-
-        # measure elapsed time
-        batch_time.update(time.time() - end)
-        end = time.time()
 
         # progress
         if batch_idx % 10 == 0 or batch_idx == len(testloader)-1:
